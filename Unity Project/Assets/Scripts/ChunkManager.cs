@@ -13,6 +13,9 @@ public class ChunkManager : MonoBehaviour
     //reusable variables for ease of computations
     private int chunkLength = 20;
     private int arrayLength;
+    private bool movedChunk = false;
+    //4x4 cube around the player
+    public int maxChunks = 4;
 
     // previous and new players coordinates, used to find out whether a player has left and entered a new chunk
     private int previous_playerX = 0; 
@@ -23,7 +26,11 @@ public class ChunkManager : MonoBehaviour
     //Dictionary to stores data about the current maze
     //Keys are the coordinates on where the chunk is placed on the xz axis
     //value is of type Vector3?4 to store exact coordinates of the chunk and rotation and type of chunk
-    private Dictionary<Vector2, Vector3> loadedChunks = new Dictionary<Vector2, Vector3>();
+    private Dictionary<Vector2, GameObject> loadedChunks = new Dictionary<Vector2, GameObject>();
+    //deletedChunks stores information about the chunks that have been deleted so that they can be respawned at their old location with the same properties
+    private Dictionary<Vector2, Vector3> deletedChunks = new Dictionary<Vector2, Vector3>();
+    //type chunks stores the type of chunks for each coordinate, used when respawning deleted chunks
+    private Dictionary<Vector2, int> typeChunks = new Dictionary<Vector2, int>();
 
     // Start is called before the first frame update
     void Start()
@@ -61,10 +68,50 @@ public class ChunkManager : MonoBehaviour
         {
             movedChunkX(previous_playerX, new_playerX);
             previous_playerX = new_playerX;
+            movedChunk = true;
         }else if (previous_playerZ != new_playerZ)
         {
             movedChunkZ(previous_playerZ, new_playerZ);
             previous_playerZ = new_playerZ;
+            movedChunk = true;
+        }
+
+        //if the player has moved to different chunk, check if we need to spawn new chunks or delete some chunks
+        if (movedChunk)
+        {
+            List<Vector2> toRemove = new List<Vector2>();
+            //if the player has moved chunks
+            //remove all chunks currently loaded that are further away then the maxChunks
+            //store the deleted chunks in the a new array incase we have to respawn them at the same positions
+            foreach (var chunk in loadedChunks)
+            {
+                if (chunk.Key.x > new_playerX + maxChunks || chunk.Key.x < new_playerX - maxChunks)
+                {
+                    //new Vector3(go.transform.position.x, go.transform.position.z, go.transform.rotation.y)
+                    if (!deletedChunks.ContainsKey(chunk.Key))
+                    {
+                        deletedChunks.Add(chunk.Key, new Vector3(chunk.Value.transform.position.x, chunk.Value.transform.position.z, chunk.Value.transform.eulerAngles.y));
+                        toRemove.Add(chunk.Key);
+                    }
+                }
+
+                if (chunk.Key.y > new_playerZ + maxChunks || chunk.Key.y < new_playerZ - maxChunks)
+                {
+                    //new Vector3(go.transform.position.x, go.transform.position.z, go.transform.rotation.y)
+                    if (!deletedChunks.ContainsKey(chunk.Key))
+                    {
+                        deletedChunks.Add(chunk.Key, new Vector3(chunk.Value.transform.position.x, chunk.Value.transform.position.z, chunk.Value.transform.eulerAngles.y));
+                        toRemove.Add(chunk.Key);
+                    }
+                }
+            }
+
+            foreach (var k in toRemove)
+            {
+                Destroy(loadedChunks[k]);
+                loadedChunks.Remove(k);
+            }
+            toRemove.Clear();
         }
     }
 
@@ -75,13 +122,14 @@ public class ChunkManager : MonoBehaviour
         int randSpawnIndex;
         int randRotIndex;
         System.Random rnd = new System.Random();
+        randSpawnIndex = rnd.Next(1, arrayLength);
         if (x == 0 && x == z)
         {
+            randSpawnIndex = 0;
             go = Instantiate(chunkPrefabs[0]) as GameObject;
         }
         else
         {
-            randSpawnIndex = rnd.Next(1,arrayLength);
             go = Instantiate(chunkPrefabs[randSpawnIndex]) as GameObject;
         }
         go.transform.SetParent(transform);
@@ -93,7 +141,8 @@ public class ChunkManager : MonoBehaviour
         go.transform.position = Vector3.right * x * chunkLength + Vector3.forward * z * chunkLength;
         go.transform.position += new Vector3(rotVec.x, 0f, rotVec.y);
 
-        loadedChunks.Add(new Vector2(x, z), new Vector3(go.transform.position.x,go.transform.position.z,go.transform.rotation.y));
+        loadedChunks.Add(new Vector2(x, z),go);
+        typeChunks.Add(new Vector2(x, z), randSpawnIndex);
 
     }
 
@@ -134,7 +183,7 @@ public class ChunkManager : MonoBehaviour
     {
         int spawnX;
         int spawnZ;
-
+        List<Vector2> toRemove = new List<Vector2>();
         if (newX - previousX ==1)
         {
             spawnX = newX + 2;
@@ -149,9 +198,26 @@ public class ChunkManager : MonoBehaviour
             spawnZ = new_playerZ + i;
             if (!loadedChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
             {
-                spawnChunk(spawnX, spawnZ);
+                //check if the chunk was deleted before
+                if (!deletedChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
+                {
+                    spawnChunk(spawnX, spawnZ);
+                }
+                else
+                {
+                    //chunk was deleted before
+                    respawnChunk(spawnX, spawnZ, deletedChunks[new Vector2(spawnX, spawnZ)], typeChunks[new Vector2(spawnX, spawnZ)]);
+                    //remove from deleted chunk since its loaded now and add it to loaded chunks
+                    toRemove.Add(new Vector2(spawnX, spawnZ));
+                }
             }
         }
+
+        foreach (var k in toRemove)
+        {
+            deletedChunks.Remove(k);
+        }
+        toRemove.Clear();
     }
 
     //when moving in the z axis create new chunks at the edge if not already created
@@ -159,7 +225,7 @@ public class ChunkManager : MonoBehaviour
     {
         int spawnX;
         int spawnZ;
-
+        List<Vector2> toRemove = new List<Vector2>();
         if (newZ - previousZ == 1)
         {
             spawnZ = newZ + 2;
@@ -174,8 +240,39 @@ public class ChunkManager : MonoBehaviour
             spawnX = new_playerX + i;
             if (!loadedChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
             {
-                spawnChunk(spawnX, spawnZ);
+                //check if the chunk was deleted before
+                if (!deletedChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
+                {
+                    spawnChunk(spawnX, spawnZ);
+                }
+                else
+                {
+                    //chunk was deleted before
+                    respawnChunk(spawnX, spawnZ, deletedChunks[new Vector2(spawnX, spawnZ)], typeChunks[new Vector2(spawnX, spawnZ)]);
+                    //remove from deleted chunk since its loaded now and add it to loaded chunks
+                    toRemove.Add(new Vector2(spawnX, spawnZ));
+                }
             }
         }
+
+        foreach (var k in toRemove)
+        {
+            deletedChunks.Remove(k);
+        }
+        toRemove.Clear();
+    }
+
+    //function used to respawn an existing chunk
+    private void respawnChunk(float x, float z, Vector3 data, int t)
+    {
+        GameObject go;
+        int randSpawnIndex = t;
+        go = Instantiate(chunkPrefabs[randSpawnIndex]) as GameObject;
+        go.transform.SetParent(transform);
+
+        go.transform.eulerAngles = new Vector3(0f, data.z, 0f);
+        go.transform.position = Vector3.right * data.x + Vector3.forward * data.y;
+
+        loadedChunks.Add(new Vector2(x, z), go);
     }
 }
