@@ -4,6 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Hide
+  - Transparent
+  - InteractableS
+  - InteractableW
   - Interactable
   layers:
   - Default

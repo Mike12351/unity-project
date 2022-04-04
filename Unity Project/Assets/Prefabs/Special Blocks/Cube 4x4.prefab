@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 9030170138075210091}
   - component: {fileID: 1269292352528640630}
   - component: {fileID: 8176270561150510957}
-  - component: {fileID: -3638949841960812205}
+  - component: {fileID: 8148518272029691335}
   m_Layer: 7
   m_Name: Cube 4x4
-  m_TagString: Interactable
+  m_TagString: InteractableS
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -314,7 +314,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &-3638949841960812205
+--- !u!114 &8148518272029691335
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -326,4 +326,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8fdeb73e57d7c54584ccf06183d4047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  glow: {fileID: 2100000, guid: 9fd85cdf8af5f2c448b3db0e2e4b419c, type: 2}
+  wall: {fileID: 2100000, guid: 9fd85cdf8af5f2c448b3db0e2e4b419c, type: 2}

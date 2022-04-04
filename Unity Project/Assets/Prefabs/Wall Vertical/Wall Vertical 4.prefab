@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 4434989731917316368}
   - component: {fileID: 5967147677951464676}
   - component: {fileID: 9094182074374238206}
-  m_Layer: 0
+  - component: {fileID: 6965083982625581278}
+  m_Layer: 7
   m_Name: Wall Vertical 4
-  m_TagString: Untagged
+  m_TagString: InteractableW
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -269,7 +270,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 1c1c0e8557fb94c44ada27599808c4f0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -313,3 +314,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &6965083982625581278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077091480455636556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 276fdd51a5fca3441a23eb13beedcef5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  opaque: {fileID: 2100000, guid: 1c1c0e8557fb94c44ada27599808c4f0, type: 2}
+  transparent: {fileID: 2100000, guid: df91246498cb8ea48b44ff46a59cadad, type: 2}
