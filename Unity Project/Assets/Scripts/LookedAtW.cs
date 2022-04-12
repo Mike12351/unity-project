@@ -37,7 +37,7 @@ public class LookedAtW : MonoBehaviour
 
         if (transform.tag == "InteractableW")
         {
-            //first we either check whether is is currenlty running or whether it is fully transparent
+            //first we either check whether it is currently running or whether it is fully transparent
             //if either is the case then we stop the last running coroutines and try to restore the wall back to normal aka not transparent
             if ((cr_running && !restore) || (!cr_running && is_transparent))
             {

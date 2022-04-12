@@ -10,6 +10,8 @@ public class PlayerLook : MonoBehaviour
 
     private RaycastHit lastHit;
 
+    private bool check = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,13 +41,27 @@ public class PlayerLook : MonoBehaviour
                 // currently chaning the tag from interactable to untagged will make sure that the gameobject slowly moves under the maze
                 hit.collider.tag = "Hide";
                 lastHit = hit;
-                // add another check that only does it if the gaze has been on object for a certain period of time
+                timer = 0f;
             }
             //if the tag ends with a W then we start the transparent change
             else if (hit.collider.tag == "InteractableW" && timer > 3f)
             {
                 hit.collider.tag = "Interactable";
-                lastHit = hit;
+                if (check)
+                {
+                    lastHit = hit;
+                    check = false;
+                }
+                else
+                {
+                    if (lastHit.collider.tag == "Interactable" || lastHit.collider.tag == "Transparent")
+                    {
+                        lastHit.collider.tag = "InteractableW";
+                    }
+                    lastHit = hit;
+                    check = false;
+                }
+                timer = 0f;
             }
         }
         else
@@ -57,6 +73,7 @@ public class PlayerLook : MonoBehaviour
                 if (lastHit.collider.tag == "Interactable" || lastHit.collider.tag == "Transparent")
                 {
                     lastHit.collider.tag = "InteractableW";
+                    check = true;
                 }
             }
             timer = 0f;
