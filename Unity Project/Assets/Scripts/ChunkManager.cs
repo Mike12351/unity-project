@@ -32,6 +32,12 @@ public class ChunkManager : MonoBehaviour
     //type chunks stores the type of chunks for each coordinate, used when respawning deleted chunks
     private Dictionary<Vector2, int> typeChunks = new Dictionary<Vector2, int>();
 
+    //timer to check how long a player has been in a chunk
+    private float timer;
+    private int difficulty_level;
+    private float treshold;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -69,11 +75,13 @@ public class ChunkManager : MonoBehaviour
             movedChunkX(previous_playerX, new_playerX);
             previous_playerX = new_playerX;
             movedChunk = true;
+            print("movedX");
         }else if (previous_playerZ != new_playerZ)
         {
             movedChunkZ(previous_playerZ, new_playerZ);
             previous_playerZ = new_playerZ;
             movedChunk = true;
+            print("movedZ");
         }
 
         //if the player has moved to different chunk, check if we need to spawn new chunks or delete some chunks
