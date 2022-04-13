@@ -1178,6 +1178,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1639892820
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1639892822}
+  - component: {fileID: 1639892821}
+  m_Layer: 0
+  m_Name: DifficultyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1639892821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639892820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 857d8ec9a622df84aac3884976f2be24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cm: {fileID: 1925305590}
+--- !u!4 &1639892822
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639892820}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1645523829
 GameObject:
   m_ObjectHideFlags: 0
@@ -1415,6 +1459,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1925305591}
   - component: {fileID: 1925305590}
+  - component: {fileID: 1925305592}
   m_Layer: 0
   m_Name: Chunk Manager
   m_TagString: Untagged
@@ -1429,7 +1474,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1925305589}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03218e459b2b4b346a5ca41c27b0d78b, type: 3}
   m_Name: 
@@ -1440,7 +1485,11 @@ MonoBehaviour:
   - {fileID: 4550246420650763562, guid: a6c70b00dcba1484cba12106d93082d8, type: 3}
   - {fileID: 4550246420650763562, guid: a6c70b00dcba1484cba12106d93082d8, type: 3}
   - {fileID: 4550246420650763562, guid: a6c70b00dcba1484cba12106d93082d8, type: 3}
+  EasyChunkPrefabs:
+  - {fileID: 5821663354009246735, guid: 3c1af4933a2b3fe4a9834a443caa8196, type: 3}
+  - {fileID: 9005359442213655754, guid: 2700704abcee15c4492a3a2021bf3c64, type: 3}
   maxChunks: 4
+  dm: {fileID: 1639892821}
 --- !u!4 &1925305591
 Transform:
   m_ObjectHideFlags: 0
@@ -1455,3 +1504,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1925305592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925305589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39f581f917c4acd46a3d7a7eac98bbb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EasyChunkPrefabs:
+  - {fileID: 4550246420650763562, guid: a6c70b00dcba1484cba12106d93082d8, type: 3}
+  MediumChunkPrefabs:
+  - {fileID: 4550246420650763562, guid: a6c70b00dcba1484cba12106d93082d8, type: 3}
+  HardChunkPrefabs:
+  - {fileID: 4550246420650763562, guid: a6c70b00dcba1484cba12106d93082d8, type: 3}
+  basis:
+  - {fileID: 5821663354009246735, guid: 3c1af4933a2b3fe4a9834a443caa8196, type: 3}

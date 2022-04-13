@@ -2,56 +2,68 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChunkManager : MonoBehaviour
+public class MazeManager : MonoBehaviour
 {
-    //chunkprefabs array stores all the possible prefabs that can be instantiated
-    public GameObject[] chunkPrefabs;
-
-    public GameObject[] EasyChunkPrefabs;
 
     //playerTransform is the player controller
     private Transform playerTransform;
 
-    //reusable variables for ease of computations
-    private int chunkLength = 20;
-    private int arrayLength;
-    private bool movedChunk = false;
-    //4x4 cube around the player
-    public int maxChunks = 4;
+    //settings of the maze manager
+    private const int chunkLength = 20;
+    private const int initialLength = 4;
 
-    // previous and new players coordinates, used to find out whether a player has left and entered a new chunk
-    private int previous_playerX = 0; 
-    private int previous_playerZ = 0;
-    private int new_playerX = 0;
-    private int new_playerZ = 0;
+    //prefabs arrays
+    public GameObject[] EasyChunkPrefabs;
+    public GameObject[] MediumChunkPrefabs;
+    public GameObject[] HardChunkPrefabs;
+    public GameObject[] basis;
 
     //Dictionary to stores data about the current maze
     //Keys are the coordinates on where the chunk is placed on the xz axis
-    //value is of type Vector3?4 to store exact coordinates of the chunk and rotation and type of chunk
-    private Dictionary<Vector2, GameObject> loadedChunks = new Dictionary<Vector2, GameObject>();
+    //value is of type Gameobject to store the chunk
+    private Dictionary<Vector2, GameObject> activeChunks = new Dictionary<Vector2, GameObject>();
+
     //deletedChunks stores information about the chunks that have been deleted so that they can be respawned at their old location with the same properties
+    //Keys are the coordinates on where the chunk was placed on the xz axis
+    //value is of type Vectore3 to store the information of the chunks such as the x and z of the chunk transform and the euler angles of the chunk
     private Dictionary<Vector2, Vector3> deletedChunks = new Dictionary<Vector2, Vector3>();
+
     //type chunks stores the type of chunks for each coordinate, used when respawning deleted chunks
+    //Keys are the coordinates on where the chunk was placed on the xz axis
+    //value is of type Vectore2 to store the information of the chunks as the prefab index and the difficulty
     private Dictionary<Vector2, Vector2> typeChunks = new Dictionary<Vector2, Vector2>();
 
-    public DifficultyManager dm;
+    //variables used in computations
 
-    private int difficulty = 2;
+    //difficulty of the maze -> 1:Easy; 2:Medium; 3:Hard
+    private int difficulty;
+    //arrayLength stores the current length of the array of the respective difficulty array
+    private int arrayLength;
+    // previous and new players coordinates, used to find out whether a player has left and entered a new chunk
+    private int previous_playerX = 0;
+    private int previous_playerZ = 0;
+    private int new_playerX = 0;
+    private int new_playerZ = 0;
+    //check if the player has moved from a chunk
+    private bool movedChunk = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        //set the initial values of the maze
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
-        arrayLength = chunkPrefabs.Length;
+        difficulty = 2;
+        arrayLength = MediumChunkPrefabs.Length;
 
-        initChunks();
+        //create the initial maze
+        initMaze();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //check if player has left/entered a new chunk
+        //check if player has moved the the chunk it is currently on
         if (playerTransform.position.x < 0)
         {
             new_playerX = (int)(playerTransform.position.x - chunkLength) / chunkLength;
@@ -75,27 +87,28 @@ public class ChunkManager : MonoBehaviour
             movedChunkX(previous_playerX, new_playerX);
             previous_playerX = new_playerX;
             movedChunk = true;
-            dm.setNewChunk();
-        }else if (previous_playerZ != new_playerZ)
+            //dm.setNewChunk();
+        }
+        else if (previous_playerZ != new_playerZ)
         {
             movedChunkZ(previous_playerZ, new_playerZ);
             previous_playerZ = new_playerZ;
             movedChunk = true;
-            dm.setNewChunk();
+            //dm.setNewChunk();
         }
 
         //if the player has moved to different chunk, check if we need to spawn new chunks or delete some chunks
         if (movedChunk)
         {
+            //temporary list to store which chunks to remove from active chunks at the end of the for loop
             List<Vector2> toRemove = new List<Vector2>();
             //if the player has moved chunks
-            //remove all chunks currently loaded that are further away then the maxChunks
-            //store the deleted chunks in the a new array incase we have to respawn them at the same positions
-            foreach (var chunk in loadedChunks)
+            //remove all chunks currently loaded that are further away than the initialLength value
+            //store the deleted chunks in the a new array incase we have to respawn them in the same positions
+            foreach (var chunk in activeChunks)
             {
-                if (chunk.Key.x > new_playerX + maxChunks || chunk.Key.x < new_playerX - maxChunks)
+                if (chunk.Key.x > new_playerX + initialLength || chunk.Key.x < new_playerX - initialLength)
                 {
-                    //new Vector3(go.transform.position.x, go.transform.position.z, go.transform.rotation.y)
                     if (!deletedChunks.ContainsKey(chunk.Key))
                     {
                         deletedChunks.Add(chunk.Key, new Vector3(chunk.Value.transform.position.x, chunk.Value.transform.position.z, chunk.Value.transform.eulerAngles.y));
@@ -103,7 +116,7 @@ public class ChunkManager : MonoBehaviour
                     }
                 }
 
-                if (chunk.Key.y > new_playerZ + maxChunks || chunk.Key.y < new_playerZ - maxChunks)
+                if (chunk.Key.y > new_playerZ + initialLength || chunk.Key.y < new_playerZ - initialLength)
                 {
                     //new Vector3(go.transform.position.x, go.transform.position.z, go.transform.rotation.y)
                     if (!deletedChunks.ContainsKey(chunk.Key))
@@ -114,12 +127,24 @@ public class ChunkManager : MonoBehaviour
                 }
             }
 
+            //remove chunks in question
             foreach (var k in toRemove)
             {
-                Destroy(loadedChunks[k]);
-                loadedChunks.Remove(k);
+                Destroy(activeChunks[k]);
+                activeChunks.Remove(k);
             }
             toRemove.Clear();
+        }
+    }
+
+    private void initMaze()
+    {
+        for (int x = -2; x <= 2; x++)
+        {
+            for (int z = -2; z <= 2; z++)
+            {
+                spawnChunk(x, z);
+            }
         }
     }
 
@@ -127,33 +152,37 @@ public class ChunkManager : MonoBehaviour
     private void spawnChunk(float x, float z, int prefabIndex = -1)
     {
         GameObject go;
+        System.Random rnd = new System.Random();
+        //random prefabIndex and random rotation
         int randSpawnIndex;
         int randRotIndex;
-        System.Random rnd = new System.Random();
 
-        GameObject[] temparr;
-
-        if (difficulty == 2)
-        {
-            temparr = chunkPrefabs;
-        }
-        else
-        {
-            temparr = EasyChunkPrefabs;
-        }
-
-        arrayLength = temparr.Length;
-
-        randSpawnIndex = rnd.Next(1, arrayLength);
         if (x == 0 && x == z)
         {
             randSpawnIndex = 0;
-            go = Instantiate(temparr[0]) as GameObject;
+            go = Instantiate(basis[randSpawnIndex]) as GameObject;
         }
         else
         {
-            go = Instantiate(temparr[randSpawnIndex]) as GameObject;
+            if (difficulty == 1)
+            {
+                arrayLength = EasyChunkPrefabs.Length;
+                randSpawnIndex = rnd.Next(0, arrayLength);
+                go = Instantiate(EasyChunkPrefabs[randSpawnIndex]) as GameObject;
+            }
+            else if (difficulty == 2)
+            {
+                arrayLength = MediumChunkPrefabs.Length;
+                randSpawnIndex = rnd.Next(0, arrayLength);
+                go = Instantiate(MediumChunkPrefabs[randSpawnIndex]) as GameObject;
+            }else
+            {
+                arrayLength = HardChunkPrefabs.Length;
+                randSpawnIndex = rnd.Next(0, arrayLength);
+                go = Instantiate(HardChunkPrefabs[randSpawnIndex]) as GameObject;
+            }
         }
+
         go.transform.SetParent(transform);
 
         randRotIndex = rnd.Next(0, 4);
@@ -163,34 +192,22 @@ public class ChunkManager : MonoBehaviour
         go.transform.position = Vector3.right * x * chunkLength + Vector3.forward * z * chunkLength;
         go.transform.position += new Vector3(rotVec.x, 0f, rotVec.y);
 
-        loadedChunks.Add(new Vector2(x, z),go);
-        typeChunks.Add(new Vector2(x, z), new Vector2(randSpawnIndex,difficulty));
-
+        activeChunks.Add(new Vector2(x, z), go);
+        typeChunks.Add(new Vector2(x, z), new Vector2(randSpawnIndex, difficulty));
     }
 
-    //inital fucntion to set up the base maze 5x5
-    private void initChunks()
-    {
-
-        for (int x = -2; x <= 2; x++)
-        {
-            for (int z = -2; z <= 2; z++)
-            {
-                spawnChunk(x,z);
-            }
-        }
-    }
-
-    //function used to help with the orientation of the chunks
+    //helper function for the rotation of the chunks
     private Vector2 rotateChunk(int index)
     {
         if (index == 0)
         {
             return new Vector2(0, 0);
-        }else if (index == 1)
+        }
+        else if (index == 1)
         {
             return new Vector2(chunkLength, 0);
-        }else if (index == 2)
+        }
+        else if (index == 2)
         {
             return new Vector2(chunkLength, -chunkLength);
         }
@@ -206,7 +223,7 @@ public class ChunkManager : MonoBehaviour
         int spawnX;
         int spawnZ;
         List<Vector2> toRemove = new List<Vector2>();
-        if (newX - previousX ==1)
+        if (newX - previousX == 1)
         {
             spawnX = newX + 2;
         }
@@ -215,10 +232,13 @@ public class ChunkManager : MonoBehaviour
             spawnX = newX - 2;
         }
 
-        for (int i = -2; i<=2; i++)
+        for (int i = -2; i <= 2; i++)
         {
             spawnZ = new_playerZ + i;
-            if (!loadedChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
+            //since we moved in the x axis, we now check for all possible new spawn location whether they are active and if they are not meaning there is a free space
+            //we then check whether it has been deleted before or not so we can then either create a new chunk or respawn an old chunk with the old properties
+            //same method used in the movedChunkZ function
+            if (!activeChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
             {
                 //check if the chunk was deleted before
                 if (!deletedChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
@@ -260,7 +280,7 @@ public class ChunkManager : MonoBehaviour
         for (int i = -2; i <= 2; i++)
         {
             spawnX = new_playerX + i;
-            if (!loadedChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
+            if (!activeChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
             {
                 //check if the chunk was deleted before
                 if (!deletedChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
@@ -288,31 +308,27 @@ public class ChunkManager : MonoBehaviour
     private void respawnChunk(float x, float z, Vector3 data, Vector2 type)
     {
         GameObject go;
-        int randSpawnIndex = (int) type.x;
+        int randSpawnIndex = (int)type.x;
         int typeDiff = (int)type.y;
 
-        GameObject[] temparr;
-        if (typeDiff == 2)
+        if (typeDiff == 1)
         {
-            temparr = chunkPrefabs;
+            go = Instantiate(EasyChunkPrefabs[randSpawnIndex]) as GameObject;
+        }
+        else if (typeDiff == 2)
+        {
+            go = Instantiate(MediumChunkPrefabs[randSpawnIndex]) as GameObject;
         }
         else
         {
-            temparr = EasyChunkPrefabs;
+            go = Instantiate(HardChunkPrefabs[randSpawnIndex]) as GameObject;
         }
-        go = Instantiate(temparr[randSpawnIndex]) as GameObject;
         go.transform.SetParent(transform);
 
         go.transform.eulerAngles = new Vector3(0f, data.z, 0f);
         go.transform.position = Vector3.right * data.x + Vector3.forward * data.y;
 
-        loadedChunks.Add(new Vector2(x, z), go);
+        activeChunks.Add(new Vector2(x, z), go);
     }
 
-    public void decreaseDiff()
-    {
-        print("diff decreased");
-        dm.resetTimer();
-        difficulty = 1;
-    }
 }
