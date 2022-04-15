@@ -53,12 +53,14 @@ public class MazeManager : MonoBehaviour
         //set the initial values of the maze
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
-        difficulty = 2;
+        difficulty = 3;
         arrayLength = MediumChunkPrefabs.Length;
 
         //create the initial maze
         initMaze();
     }
+
+    //change the difficulty system so that its not all easy/medium or hard chunks but instead create a system that starts at 33% for each chunk and depending on the difficulty scale we adjust the rates of which chunks we should spawn
 
     // Update is called once per frame
     void Update()

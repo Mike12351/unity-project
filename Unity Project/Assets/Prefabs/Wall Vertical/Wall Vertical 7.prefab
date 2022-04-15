@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4170484097768320576}
   - component: {fileID: 5359579699966869749}
   - component: {fileID: 6466684799852407608}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Wall Vertical 7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -269,7 +269,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: df91246498cb8ea48b44ff46a59cadad, type: 2}
+  - {fileID: 2100000, guid: 1c1c0e8557fb94c44ada27599808c4f0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

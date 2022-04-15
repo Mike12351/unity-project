@@ -32,8 +32,14 @@ public class PlayerLook : MonoBehaviour
         //if we hit an object then we can start the timer to count when we should do a dynamic change
         if (Physics.Raycast(transform.position, transform.forward, out hit, maxDistance, layerMask))
         {
-
-            timer += Time.deltaTime;
+            if (hit.collider.tag == "InteractableS" || hit.collider.tag == "InteractableW")
+            {
+                timer += Time.deltaTime;
+            }
+            else
+            {
+                timer = 0;
+            }
 
             //if the tag of the collider ends with S then we start the hide change
             if (hit.collider.tag == "InteractableS" && timer > 3f)

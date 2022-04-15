@@ -24,6 +24,14 @@ public class LookedAtS : MonoBehaviour
         //check if the tag of the gameoject is hide and if it is the case then we start the method to hide the bloc underneath the map
         if (transform.tag == "Hide")
         {
+            if (transform.childCount > 0)
+            {
+                foreach (Renderer r in GetComponentsInChildren<Renderer>())
+                {
+                    r.material = wall;
+                }
+            }
+
             renderer.material = wall;
 
             if (transform.position != endPos)
