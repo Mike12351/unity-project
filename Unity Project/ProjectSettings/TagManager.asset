@@ -9,6 +9,7 @@ TagManager:
   - InteractableS
   - InteractableW
   - Interactable
+  - Enemy
   layers:
   - Default
   - TransparentFX

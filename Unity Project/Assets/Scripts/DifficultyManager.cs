@@ -8,12 +8,17 @@ public class DifficultyManager : MonoBehaviour
     private bool newChunk = false;
 
 
-    public ChunkManager cm;
+    public MazeManager mm;
+
+    private int seconds = 10;
+
+    private int counter;
 
     // Start is called before the first frame update
     void Start()
     {
         timer = 0f;
+        counter = 0;
     }
 
     // Update is called once per frame
@@ -25,26 +30,36 @@ public class DifficultyManager : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            if (timer > 3)
+            if (timer > seconds)
             {
-                print("3 seconds have passed");
-                cm.decreaseDiff();
+                print("10 seconds have passed");
+                mm.decreaseDiff();
             }
         }
     }
 
     public void resetTimer()
     {
+        print("timer reset");
         newChunk = false;
         timer = 0;
+        counter = 0;
     }
 
-    public void setNewChunk()
+    public void enteredNewChunk()
     {
+        //if the player has entered a new chunk, reset the difficulty timer
         if (newChunk)
         {
+            print("counter increased");
             timer = 0f;
-            print("timer reset");
+            counter += 1;
+            print(counter);
+            if (counter >= 5)
+            {
+                counter = 0;
+                mm.increaseDiff();
+            }
         }else
         {
             newChunk = true;

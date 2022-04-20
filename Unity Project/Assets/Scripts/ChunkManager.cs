@@ -75,13 +75,13 @@ public class ChunkManager : MonoBehaviour
             movedChunkX(previous_playerX, new_playerX);
             previous_playerX = new_playerX;
             movedChunk = true;
-            dm.setNewChunk();
+            //dm.setNewChunk();
         }else if (previous_playerZ != new_playerZ)
         {
             movedChunkZ(previous_playerZ, new_playerZ);
             previous_playerZ = new_playerZ;
             movedChunk = true;
-            dm.setNewChunk();
+            //dm.setNewChunk();
         }
 
         //if the player has moved to different chunk, check if we need to spawn new chunks or delete some chunks
