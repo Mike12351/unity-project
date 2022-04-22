@@ -54,7 +54,7 @@ public class MazeManager : MonoBehaviour
         //set the initial values of the maze
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
-        difficulty = 3;
+        difficulty = 2;
         arrayLength = MediumChunkPrefabs.Length;
 
         //create the initial maze
@@ -146,19 +146,29 @@ public class MazeManager : MonoBehaviour
         {
             for (int z = -2; z <= 2; z++)
             {
-                spawnChunk(x, z);
+                spawnChunk(x, z,-1,true);
             }
         }
     }
 
     //spawns a new chunk at the given location, with random orientation and random type
-    private void spawnChunk(float x, float z, int prefabIndex = -1)
+    private void spawnChunk(float x, float z, int prefabIndex = -1, bool randomize = false)
     {
         GameObject go;
         System.Random rnd = new System.Random();
         //random prefabIndex and random rotation
         int randSpawnIndex;
         int randRotIndex;
+        int diff;
+
+        if (randomize)
+        {
+            diff = rnd.Next(1, 4);
+        }
+        else
+        {
+            diff = difficulty;
+        }
 
         if (x == 0 && x == z)
         {
@@ -167,13 +177,13 @@ public class MazeManager : MonoBehaviour
         }
         else
         {
-            if (difficulty == 1)
+            if (diff == 1)
             {
                 arrayLength = EasyChunkPrefabs.Length;
                 randSpawnIndex = rnd.Next(0, arrayLength);
                 go = Instantiate(EasyChunkPrefabs[randSpawnIndex]) as GameObject;
             }
-            else if (difficulty == 2)
+            else if (diff == 2)
             {
                 arrayLength = MediumChunkPrefabs.Length;
                 randSpawnIndex = rnd.Next(0, arrayLength);
@@ -196,7 +206,7 @@ public class MazeManager : MonoBehaviour
         go.transform.position += new Vector3(rotVec.x, 0f, rotVec.y);
 
         activeChunks.Add(new Vector2(x, z), go);
-        typeChunks.Add(new Vector2(x, z), new Vector2(randSpawnIndex, difficulty));
+        typeChunks.Add(new Vector2(x, z), new Vector2(randSpawnIndex, diff));
     }
 
     //helper function for the rotation of the chunks
