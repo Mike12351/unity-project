@@ -16,10 +16,18 @@ public class PlayerMovement : MonoBehaviour
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
 
+    public EnemyProperties enemyProperties;
+
     Vector3 velocity;
     bool isGrounded;
 
     public GameObject deathParticles;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        enemyProperties = GameObject.FindObjectOfType<EnemyProperties>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -39,10 +47,12 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             controller.Move(move * sprintSpeed * Time.deltaTime);
+            enemyProperties.sprint();
         }
         else
         {
             controller.Move(move * speed * Time.deltaTime);
+            enemyProperties.resetSpeed();
         }
 
         if (Input.GetButtonDown("Jump") && isGrounded)
@@ -53,6 +63,7 @@ public class PlayerMovement : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity*Time.deltaTime);
+
     }
 
     public void OnTriggerEnter(Collider other)

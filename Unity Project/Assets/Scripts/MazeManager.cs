@@ -16,7 +16,7 @@ public class MazeManager : MonoBehaviour
     public GameObject[] EasyChunkPrefabs;
     public GameObject[] MediumChunkPrefabs;
     public GameObject[] HardChunkPrefabs;
-    public GameObject[] basis;
+    public GameObject[] special;
 
     //Dictionary to stores data about the current maze
     //Keys are the coordinates on where the chunk is placed on the xz axis
@@ -59,6 +59,7 @@ public class MazeManager : MonoBehaviour
 
         //create the initial maze
         initMaze();
+        initGoal();
     }
 
     //change the difficulty system so that its not all easy/medium or hard chunks but instead create a system that starts at 33% for each chunk and depending on the difficulty scale we adjust the rates of which chunks we should spawn
@@ -151,6 +152,25 @@ public class MazeManager : MonoBehaviour
         }
     }
 
+    private void initGoal()
+    {
+        System.Random rnd = new System.Random();
+        GameObject go;
+        int x, z;
+
+        x = rnd.Next(3, 5);
+        z = rnd.Next(3, 5);
+
+        go = Instantiate(special[1]) as GameObject;
+
+        go.transform.SetParent(transform);
+
+        go.transform.position = Vector3.right * x * chunkLength + Vector3.forward * z * chunkLength;
+
+        activeChunks.Add(new Vector2(x, z), go);
+        typeChunks.Add(new Vector2(x, z), new Vector2(1, 4));
+    }
+
     //spawns a new chunk at the given location, with random orientation and random type
     private void spawnChunk(float x, float z, int prefabIndex = -1, bool randomize = false)
     {
@@ -173,7 +193,8 @@ public class MazeManager : MonoBehaviour
         if (x == 0 && x == z)
         {
             randSpawnIndex = 0;
-            go = Instantiate(basis[randSpawnIndex]) as GameObject;
+            diff = 4;
+            go = Instantiate(special[randSpawnIndex]) as GameObject;
         }
         else
         {
@@ -332,9 +353,13 @@ public class MazeManager : MonoBehaviour
         {
             go = Instantiate(MediumChunkPrefabs[randSpawnIndex]) as GameObject;
         }
-        else
+        else if (typeDiff == 3)
         {
             go = Instantiate(HardChunkPrefabs[randSpawnIndex]) as GameObject;
+        }
+        else
+        {
+            go = Instantiate(special[randSpawnIndex]) as GameObject;
         }
         go.transform.SetParent(transform);
 
