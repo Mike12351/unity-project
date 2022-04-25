@@ -377,6 +377,11 @@ public class MazeManager : MonoBehaviour
             print(difficulty);
             dm.resetTimer();
         }
+        else
+        {
+            dm.resetTimer();
+        }
+
     }
 
     public void increaseDiff()
@@ -385,6 +390,10 @@ public class MazeManager : MonoBehaviour
         {
             difficulty += 1;
             print(difficulty);
+            dm.resetTimer();
+        }
+        else
+        {
             dm.resetTimer();
         }
     }

@@ -33,7 +33,7 @@ public class DifficultyManager : MonoBehaviour
 
             if (timer > seconds)
             {
-                print("10 seconds have passed");
+                print("30 seconds have passed");
                 mm.decreaseDiff();
             }
         }
