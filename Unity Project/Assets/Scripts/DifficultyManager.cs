@@ -7,8 +7,7 @@ public class DifficultyManager : MonoBehaviour
     private float timer;
     private bool newChunk = false;
 
-
-    public MazeManager mm;
+    public DynamicChangeManager dcm;
 
     private int seconds = 30;
 
@@ -34,14 +33,14 @@ public class DifficultyManager : MonoBehaviour
             if (timer > seconds)
             {
                 print("30 seconds have passed");
-                mm.decreaseDiff();
+                dcm.mmDecreaseDiff();
             }
         }
     }
 
     public void resetTimer()
     {
-        print("timer reset");
+        //print("timer reset");
         newChunk = false;
         timer = 0;
         counter = 0;
@@ -52,14 +51,14 @@ public class DifficultyManager : MonoBehaviour
         //if the player has entered a new chunk, reset the difficulty timer
         if (newChunk)
         {
-            print("counter increased");
+            //print("counter increased");
             timer = 0f;
             counter += 1;
-            print(counter);
+            //print(counter);
             if (counter >= treshold)
             {
                 counter = 0;
-                mm.increaseDiff();
+                dcm.mmIncreaseDiff();
             }
         }else
         {

@@ -36,7 +36,7 @@ public class MazeManager : MonoBehaviour
     //variables used in computations
 
     //difficulty of the maze -> 1:Easy; 2:Medium; 3:Hard
-    public DifficultyManager dm;
+    public DynamicChangeManager dcm;
     private int difficulty;
     //arrayLength stores the current length of the array of the respective difficulty array
     private int arrayLength;
@@ -91,14 +91,14 @@ public class MazeManager : MonoBehaviour
             movedChunkX(previous_playerX, new_playerX);
             previous_playerX = new_playerX;
             movedChunk = true;
-            dm.enteredNewChunk();
+            dcm.dmEnterNewChunk();
         }
         else if (previous_playerZ != new_playerZ)
         {
             movedChunkZ(previous_playerZ, new_playerZ);
             previous_playerZ = new_playerZ;
             movedChunk = true;
-            dm.enteredNewChunk();
+            dcm.dmEnterNewChunk();
         }
 
         //if the player has moved to different chunk, check if we need to spawn new chunks or delete some chunks
@@ -375,11 +375,11 @@ public class MazeManager : MonoBehaviour
         {
             difficulty -= 1;
             print(difficulty);
-            dm.resetTimer();
+            dcm.dmResetTimer();
         }
         else
         {
-            dm.resetTimer();
+            dcm.dmResetTimer();
         }
 
     }
@@ -390,11 +390,11 @@ public class MazeManager : MonoBehaviour
         {
             difficulty += 1;
             print(difficulty);
-            dm.resetTimer();
+            dcm.dmResetTimer();
         }
         else
         {
-            dm.resetTimer();
+            dcm.dmResetTimer();
         }
     }
 

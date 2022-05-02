@@ -16,18 +16,14 @@ public class PlayerMovement : MonoBehaviour
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
 
-    public EnemyProperties enemyProperties;
+    public DynamicChangeManager dcm;
 
     Vector3 velocity;
     bool isGrounded;
 
     public GameObject deathParticles;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        enemyProperties = GameObject.FindObjectOfType<EnemyProperties>();
-    }
+    private bool disableFeature = true;
 
     // Update is called once per frame
     void Update()
@@ -44,15 +40,18 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = transform.right * x + transform.forward * z;
 
-        if (Input.GetKey(KeyCode.LeftShift) && move != Vector3.zero)
+        if (move == Vector3.zero && !disableFeature)
+        {
+            dcm.emFreeze();
+        }else if (Input.GetKey(KeyCode.LeftShift) && move != Vector3.zero)
         {
             controller.Move(move * sprintSpeed * Time.deltaTime);
-            enemyProperties.sprint();
+            dcm.emSprint();
         }
         else
         {
             controller.Move(move * speed * Time.deltaTime);
-            enemyProperties.resetSpeed();
+            dcm.emResetSpeed();
         }
 
         if (Input.GetButtonDown("Jump") && isGrounded)

@@ -8,14 +8,14 @@ public class EnemyMove : MonoBehaviour
 
     public Transform[] patrolPoints;
     private int index;
-    public EnemyProperties ep;
+    public EnemyManager ep;
 
     public float moveSpeed;
 
     // Start is called before the first frame update
     void Start()
     {
-        ep = GameObject.FindObjectOfType<EnemyProperties>();
+        ep = GameObject.FindObjectOfType<EnemyManager>();
         index = 0;
         transform.position = patrolPoints[index].position;
         moveSpeed = ep.getSpeed();
