@@ -10,6 +10,7 @@ public class EnemyAgentMove : MonoBehaviour
     public Transform[] patrolPoints;
 
     private int index;
+    private int currentIndex = 0;
 
     private bool reached = true;
     private Vector3 nextPoint;
@@ -29,10 +30,11 @@ public class EnemyAgentMove : MonoBehaviour
         //otherwise repeat and set a new goal point
         if (reached)
         {
-            index = Random.Range(1, patrolPoints.Length);
+            index = Random.Range(0, patrolPoints.Length);
             nextPoint = patrolPoints[index].position;
             reached = false;
             nextPoint = new Vector3(nextPoint.x, nextPoint.y, nextPoint.z);
+            //if (currentIndex == index)
             agent.SetDestination(nextPoint);
         }
         // stay in chunk and just move around
