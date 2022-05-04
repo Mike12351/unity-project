@@ -32,7 +32,7 @@ public class EnemyAgentMove : MonoBehaviour
             index = Random.Range(1, patrolPoints.Length);
             nextPoint = patrolPoints[index].position;
             reached = false;
-            nextPoint = new Vector3(nextPoint.x, 2.5f, nextPoint.z);
+            nextPoint = new Vector3(nextPoint.x, nextPoint.y, nextPoint.z);
             agent.SetDestination(nextPoint);
         }
         // stay in chunk and just move around
