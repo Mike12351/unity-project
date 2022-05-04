@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5967147677951464676}
   - component: {fileID: 9094182074374238206}
   - component: {fileID: 6965083982625581278}
+  - component: {fileID: 2029244740951292822}
   m_Layer: 7
   m_Name: Wall Vertical 4
   m_TagString: InteractableW
@@ -328,3 +329,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   opaque: {fileID: 2100000, guid: 1c1c0e8557fb94c44ada27599808c4f0, type: 2}
   transparent: {fileID: 2100000, guid: df91246498cb8ea48b44ff46a59cadad, type: 2}
+--- !u!208 &2029244740951292822
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077091480455636556}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 2.5, z: 2}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.5, y: 2.5, z: -2}
+  m_TimeToStationary: 0.5

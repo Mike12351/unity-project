@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2491104530825583226}
   - component: {fileID: 6800063245823177368}
   - component: {fileID: 6496945206730781259}
+  - component: {fileID: -6827655762751727377}
   m_Layer: 7
   m_Name: Wall Horizontal 8
   m_TagString: Untagged
@@ -313,3 +314,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!208 &-6827655762751727377
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5827076576909730920}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 2.5, z: 4}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.5, y: 2.5, z: -4}
+  m_TimeToStationary: 0.5

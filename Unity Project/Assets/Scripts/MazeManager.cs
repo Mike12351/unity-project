@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MazeManager : MonoBehaviour
 {
@@ -47,6 +48,8 @@ public class MazeManager : MonoBehaviour
     private int new_playerZ = 0;
     //check if the player has moved from a chunk
     private bool movedChunk = false;
+
+    public NavMeshSurface surface;
 
     // Start is called before the first frame update
     void Start()
@@ -398,4 +401,8 @@ public class MazeManager : MonoBehaviour
         }
     }
 
+    public void buildNavMesh()
+    {
+        surface.BuildNavMesh();
+    }
 }

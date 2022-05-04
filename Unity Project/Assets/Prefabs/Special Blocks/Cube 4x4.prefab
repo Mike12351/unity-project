@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1269292352528640630}
   - component: {fileID: 8176270561150510957}
   - component: {fileID: 8148518272029691335}
+  - component: {fileID: 1574400779545228600}
   m_Layer: 7
   m_Name: Cube 4x4
   m_TagString: InteractableS
@@ -327,3 +328,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wall: {fileID: 2100000, guid: 9fd85cdf8af5f2c448b3db0e2e4b419c, type: 2}
+--- !u!208 &1574400779545228600
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6894304827301748500}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 2, y: 2.5, z: 2}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 2, y: 2.5, z: -2}
+  m_TimeToStationary: 0.5
