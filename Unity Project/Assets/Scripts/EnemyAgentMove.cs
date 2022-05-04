@@ -29,7 +29,7 @@ public class EnemyAgentMove : MonoBehaviour
 
     //the constant used to determine whether we have arrived at the goal
     private const float threshold = 0.2f;
-    private const float thresholdPlayer = f;
+    private const float thresholdPlayer = 10f;
 
     public Transform player;
 
