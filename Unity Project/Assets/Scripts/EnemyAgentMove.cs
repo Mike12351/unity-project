@@ -25,6 +25,7 @@ public class EnemyAgentMove : MonoBehaviour
         transform.position = patrolPoints[0].position;
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = true;
+        flag = true;
     }
 
     // Update is called once per frame
@@ -52,9 +53,7 @@ public class EnemyAgentMove : MonoBehaviour
         {
             if (agent.remainingDistance < threshold)
             {
-                print("arrived");
                 reached = true;
-                Destroy(this);
             }
         }
         // stay in chunk and just move around
