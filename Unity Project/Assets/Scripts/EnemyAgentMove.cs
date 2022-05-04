@@ -26,6 +26,9 @@ public class EnemyAgentMove : MonoBehaviour
 
     //the constant used to determine whether we have arrived at the goal
     private const float threshold = 0.2f;
+    private const float thresholdPlayer = 10f;
+
+    public Transform player;
 
     // Start is called before the first frame update
     void Start()
@@ -68,10 +71,14 @@ public class EnemyAgentMove : MonoBehaviour
                 reached = true;
             }
         }
-        // stay in chunk and just move around
-            // if distance from enemy to player has reached a certain value (can be changed later via dynamic changes)
-            //then target player
-            //otherwise go back to initial pos
-            //and just move around
+
+        // add new feature where the enemy goes after the player is the player comes close to the enemy
+        // stops if the player is further away and goes back to its usual routine
+
+        float dist = Vector3.Distance(transform.position, player.position);
+        if (dist < thresholdPlayer)
+        {
+            print("close to player");
+        }
     }
 }
