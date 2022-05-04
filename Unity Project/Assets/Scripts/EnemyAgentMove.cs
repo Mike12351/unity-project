@@ -14,6 +14,8 @@ public class EnemyAgentMove : MonoBehaviour
     private bool reached = true;
     private Vector3 nextPoint;
 
+    private const float threshold = 0.2f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +37,13 @@ public class EnemyAgentMove : MonoBehaviour
         }
         // stay in chunk and just move around
 
+        if (agent.remainingDistance < threshold && !reached)
+        {
+            //if the remaining distance is less than the threshold then we assume that the player has arrived
+            //at the destination
+            reached = true;
+            print("reached destination");
+        }
             // if distance from enemy to player has reached a certain value (can be changed later via dynamic changes)
             //then target player
             //otherwise go back to initial pos
