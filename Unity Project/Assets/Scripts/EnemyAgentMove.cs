@@ -20,13 +20,16 @@ public class EnemyAgentMove : MonoBehaviour
     private bool reached = true;
     //coordinates of the point to go to
     private Vector3 nextPoint;
+    private Vector3 oldPoint;
 
     //flag to check whether the agent has been enabled
     private bool flag = false;
 
+    private bool follow = false;
+
     //the constant used to determine whether we have arrived at the goal
     private const float threshold = 0.2f;
-    private const float thresholdPlayer = 10f;
+    private const float thresholdPlayer = f;
 
     public Transform player;
 
@@ -35,6 +38,7 @@ public class EnemyAgentMove : MonoBehaviour
     {
         //start by setting the enemy to the start position
         //and enable the agent component and tus the flag as well
+        player = GameObject.FindWithTag("Player").transform;
         transform.position = patrolPoints[0].position;
         agent = GetComponent<NavMeshAgent>();
         agent.enabled = true;
@@ -75,10 +79,21 @@ public class EnemyAgentMove : MonoBehaviour
         // add new feature where the enemy goes after the player is the player comes close to the enemy
         // stops if the player is further away and goes back to its usual routine
 
+
+        //distance between enemy and player
         float dist = Vector3.Distance(transform.position, player.position);
+        //if the distance meets a certain criteria then start going towards the player
         if (dist < thresholdPlayer)
         {
-            print("close to player");
+            oldPoint = nextPoint;
+            follow = true;
+            agent.SetDestination(player.position);
+        }
+        //if the player is now further away then go back to initial goal
+        else if (dist > thresholdPlayer && follow)
+        {
+            follow = false;
+            agent.SetDestination(oldPoint);
         }
     }
 }
