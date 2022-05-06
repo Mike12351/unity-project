@@ -38,6 +38,7 @@ public class EnemyAgentMove : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        em = GameObject.FindObjectOfType<EnemyManager>();
         //start by setting the enemy to the start position
         //and enable the agent component and tus the flag as well
         player = GameObject.FindWithTag("Player").transform;
