@@ -33,6 +33,8 @@ public class EnemyAgentMove : MonoBehaviour
 
     public Transform player;
 
+    public EnemyManager em;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,6 +50,8 @@ public class EnemyAgentMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        agent.speed = em.getSpeed();
+
         //if the enemy hasnt reached the current goal point do nothing
         //otherwise repeat and set a new goal point
         if (reached)
