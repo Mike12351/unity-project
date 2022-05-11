@@ -38,6 +38,11 @@ public class LookedAtS : MonoBehaviour
             {
                 transform.position = Vector3.Lerp(transform.position, endPos, Time.deltaTime * 1f);
             }
+            else
+            {
+                //stop update
+                Destroy(this);
+            }
         }
     }
 }

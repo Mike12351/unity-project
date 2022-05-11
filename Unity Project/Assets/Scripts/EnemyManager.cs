@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
-    public float moveSpeed = 3.5f;
-    private float baseSpeed = 3.5f;
-    private float sprintSpeed = 5f;
+    public float moveSpeed = 5f;
+    private float baseSpeed = 5f;
+    private float sprintSpeed = 10f;
 
     public void sprint()
     {

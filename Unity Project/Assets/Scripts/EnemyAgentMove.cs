@@ -22,14 +22,11 @@ public class EnemyAgentMove : MonoBehaviour
     private Vector3 nextPoint;
     private Vector3 oldPoint;
 
-    //flag to check whether the agent has been enabled
-    private bool flag = false;
-
     private bool follow = false;
 
     //the constant used to determine whether we have arrived at the goal
     private const float threshold = 0.2f;
-    private const float thresholdPlayer = 10f;
+    private const float thresholdPlayer = 5f;
 
     public Transform player;
 
@@ -38,20 +35,20 @@ public class EnemyAgentMove : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        em = GameObject.FindObjectOfType<EnemyManager>();
+        //em = GameObject.FindObjectOfType<EnemyManager>();
         //start by setting the enemy to the start position
-        //and enable the agent component and tus the flag as well
         player = GameObject.FindWithTag("Player").transform;
         transform.position = patrolPoints[0].position;
         agent = GetComponent<NavMeshAgent>();
+        
+        //enable the agent component so that it doesnt spawn randomly
         agent.enabled = true;
-        flag = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        agent.speed = em.getSpeed();
+        //agent.speed = em.getSpeed();
 
         //if the enemy hasnt reached the current goal point do nothing
         //otherwise repeat and set a new goal point
@@ -73,7 +70,7 @@ public class EnemyAgentMove : MonoBehaviour
         }
 
         //pathpending to check whether the agent is done with calculating the path
-        if (!agent.pathPending && !reached && flag)
+        if (!agent.pathPending && !reached && agent.enabled)
         {
             if (agent.remainingDistance < threshold)
             {
@@ -94,11 +91,12 @@ public class EnemyAgentMove : MonoBehaviour
             follow = true;
             agent.SetDestination(player.position);
         }
-        //if the player is now further away then go back to initial goal
+        //if the player is now further away then go back to initial goal and stop following
         else if (dist > thresholdPlayer && follow)
         {
             follow = false;
             agent.SetDestination(oldPoint);
         }
+
     }
 }

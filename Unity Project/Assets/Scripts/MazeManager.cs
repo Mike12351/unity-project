@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Threading.Tasks;
 
 public class MazeManager : MonoBehaviour
 {
@@ -11,7 +12,8 @@ public class MazeManager : MonoBehaviour
 
     //settings of the maze manager
     private const int chunkLength = 20;
-    private const int initialLength = 4;
+    private const int initialLength = 3;
+    private const int destroyLength = initialLength;
 
     //prefabs arrays
     public GameObject[] EasyChunkPrefabs;
@@ -49,7 +51,10 @@ public class MazeManager : MonoBehaviour
     //check if the player has moved from a chunk
     private bool movedChunk = false;
 
-    public NavMeshSurface surface;
+    private int maxAgents = 2;
+    private int currentAgents = 0;
+
+    private Vector2 agentsInfo = new Vector2(0f, 3f);
 
     // Start is called before the first frame update
     void Start()
@@ -63,6 +68,7 @@ public class MazeManager : MonoBehaviour
         //create the initial maze
         initMaze();
         initGoal();
+        print(currentAgents);
     }
 
     //change the difficulty system so that its not all easy/medium or hard chunks but instead create a system that starts at 33% for each chunk and depending on the difficulty scale we adjust the rates of which chunks we should spawn
@@ -110,11 +116,11 @@ public class MazeManager : MonoBehaviour
             //temporary list to store which chunks to remove from active chunks at the end of the for loop
             List<Vector2> toRemove = new List<Vector2>();
             //if the player has moved chunks
-            //remove all chunks currently loaded that are further away than the initialLength value
-            //store the deleted chunks in the a new array incase we have to respawn them in the same positions
+            //remove all chunks currently loaded that are further away than the destroyLength value
+            //store the deleted chunks in the new array incase we have to respawn them in the same positions
             foreach (var chunk in activeChunks)
             {
-                if (chunk.Key.x > new_playerX + initialLength || chunk.Key.x < new_playerX - initialLength)
+                if (chunk.Key.x > new_playerX + (destroyLength / 2) || chunk.Key.x < new_playerX - (destroyLength / 2))
                 {
                     if (!deletedChunks.ContainsKey(chunk.Key))
                     {
@@ -123,7 +129,7 @@ public class MazeManager : MonoBehaviour
                     }
                 }
 
-                if (chunk.Key.y > new_playerZ + initialLength || chunk.Key.y < new_playerZ - initialLength)
+                if (chunk.Key.y > new_playerZ + (destroyLength / 2) || chunk.Key.y < new_playerZ - (destroyLength / 2))
                 {
                     //new Vector3(go.transform.position.x, go.transform.position.z, go.transform.rotation.y)
                     if (!deletedChunks.ContainsKey(chunk.Key))
@@ -139,16 +145,23 @@ public class MazeManager : MonoBehaviour
             {
                 Destroy(activeChunks[k]);
                 activeChunks.Remove(k);
+                //since deleted we have to checked the type and diff and see if one with agents got destroyed
+                if (typeChunks[k] == agentsInfo)
+                {
+                    currentAgents--;
+                }
             }
             toRemove.Clear();
+            print(currentAgents);
+            movedChunk = false;
         }
     }
 
     private void initMaze()
     {
-        for (int x = -2; x <= 2; x++)
+        for (int x = -(initialLength / 2); x <= (initialLength / 2); x++)
         {
-            for (int z = -2; z <= 2; z++)
+            for (int z = -(initialLength / 2); z <= (initialLength / 2); z++)
             {
                 spawnChunk(x, z,-1,true);
             }
@@ -215,7 +228,19 @@ public class MazeManager : MonoBehaviour
             }else
             {
                 arrayLength = HardChunkPrefabs.Length;
-                randSpawnIndex = rnd.Next(0, arrayLength);
+                if (currentAgents < maxAgents)
+                {
+                    randSpawnIndex = rnd.Next(0, arrayLength);
+                    if (randSpawnIndex == agentsInfo.x)
+                    {
+                        currentAgents++;
+                    }
+                }
+                else
+                {
+                    randSpawnIndex = rnd.Next(1, arrayLength);
+                }
+
                 go = Instantiate(HardChunkPrefabs[randSpawnIndex]) as GameObject;
             }
         }
@@ -262,14 +287,14 @@ public class MazeManager : MonoBehaviour
         List<Vector2> toRemove = new List<Vector2>();
         if (newX - previousX == 1)
         {
-            spawnX = newX + 2;
+            spawnX = newX + (initialLength / 2);
         }
         else
         {
-            spawnX = newX - 2;
+            spawnX = newX - (initialLength / 2);
         }
 
-        for (int i = -2; i <= 2; i++)
+        for (int i = -(initialLength / 2); i <= (initialLength / 2); i++)
         {
             spawnZ = new_playerZ + i;
             //since we moved in the x axis, we now check for all possible new spawn location whether they are active and if they are not meaning there is a free space
@@ -307,14 +332,14 @@ public class MazeManager : MonoBehaviour
         List<Vector2> toRemove = new List<Vector2>();
         if (newZ - previousZ == 1)
         {
-            spawnZ = newZ + 2;
+            spawnZ = newZ + (initialLength / 2);
         }
         else
         {
-            spawnZ = newZ - 2;
+            spawnZ = newZ - (initialLength / 2);
         }
 
-        for (int i = -2; i <= 2; i++)
+        for (int i = -(initialLength / 2); i <= (initialLength / 2); i++)
         {
             spawnX = new_playerX + i;
             if (!activeChunks.ContainsKey(new Vector2(spawnX, spawnZ)))
@@ -359,6 +384,10 @@ public class MazeManager : MonoBehaviour
         else if (typeDiff == 3)
         {
             go = Instantiate(HardChunkPrefabs[randSpawnIndex]) as GameObject;
+            if (randSpawnIndex == agentsInfo.x)
+            {
+                currentAgents++;
+            }
         }
         else
         {
@@ -399,10 +428,5 @@ public class MazeManager : MonoBehaviour
         {
             dcm.dmResetTimer();
         }
-    }
-
-    public void buildNavMesh()
-    {
-        surface.BuildNavMesh();
     }
 }
