@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class DifficultyManager : MonoBehaviour
 {
+    public DynamicChangeManager dcm;
+
     private float timer;
     private bool newChunk = false;
-
-    public DynamicChangeManager dcm;
 
     private int seconds = 10;
 
