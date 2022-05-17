@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using System.Threading.Tasks;
 
 public class MazeManager : MonoBehaviour
 {
@@ -40,7 +38,7 @@ public class MazeManager : MonoBehaviour
 
     //difficulty of the maze -> 1:Easy; 2:Medium; 3:Hard
     public DynamicChangeManager dcm;
-    private int difficulty;
+    //private int difficulty;
     //arrayLength stores the current length of the array of the respective difficulty array
     private int arrayLength;
     // previous and new players coordinates, used to find out whether a player has left and entered a new chunk
@@ -61,14 +59,12 @@ public class MazeManager : MonoBehaviour
     {
         //set the initial values of the maze
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-
-        difficulty = 2;
         arrayLength = MediumChunkPrefabs.Length;
 
         //create the initial maze
         initMaze();
         initGoal();
-        print(currentAgents);
+        //print(currentAgents);
     }
 
     //change the difficulty system so that its not all easy/medium or hard chunks but instead create a system that starts at 33% for each chunk and depending on the difficulty scale we adjust the rates of which chunks we should spawn
@@ -152,7 +148,6 @@ public class MazeManager : MonoBehaviour
                 }
             }
             toRemove.Clear();
-            print(currentAgents);
             movedChunk = false;
         }
     }
@@ -203,7 +198,9 @@ public class MazeManager : MonoBehaviour
         }
         else
         {
-            diff = difficulty;
+            //call a manager that is responsible for changing the world building
+            //or repurpose the difficulty manager
+            diff = dcm.dmGetDiff();
         }
 
         if (x == 0 && x == z)
@@ -399,34 +396,5 @@ public class MazeManager : MonoBehaviour
         go.transform.position = Vector3.right * data.x + Vector3.forward * data.y;
 
         activeChunks.Add(new Vector2(x, z), go);
-    }
-
-    public void decreaseDiff()
-    {
-        if (difficulty != 1)
-        {
-            difficulty -= 1;
-            print(difficulty);
-            dcm.dmResetTimer();
-        }
-        else
-        {
-            dcm.dmResetTimer();
-        }
-
-    }
-
-    public void increaseDiff()
-    {
-        if (difficulty != 3)
-        {
-            difficulty += 1;
-            print(difficulty);
-            dcm.dmResetTimer();
-        }
-        else
-        {
-            dcm.dmResetTimer();
-        }
     }
 }

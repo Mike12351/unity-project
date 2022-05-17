@@ -47,16 +47,6 @@ public class DynamicChangeManager : MonoBehaviour
 
     //chunkManager
 
-    public void mmIncreaseDiff()
-    {
-        mm.increaseDiff();
-    }
-
-    public void mmDecreaseDiff()
-    {
-        mm.decreaseDiff();
-    }
-
     //difficultyManager
 
     public void dmResetTimer()
@@ -66,5 +56,10 @@ public class DynamicChangeManager : MonoBehaviour
     public void dmEnterNewChunk()
     {
         dm.enteredNewChunk();
+    }
+
+    public int dmGetDiff()
+    {
+        return dm.getDiff();
     }
 }
