@@ -11,7 +11,7 @@ public class PlayerLook : MonoBehaviour
     private float timer;
 
     //amount of seconds before triggering a dynamic change
-    private float threshold = 5f;
+    private float threshold = 2f;
 
     //stores information about the last object hit by the ray
     private RaycastHit lastHit;
